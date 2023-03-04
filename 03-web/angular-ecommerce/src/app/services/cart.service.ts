@@ -18,12 +18,15 @@ export class CartService {
     let existingCartItem: CartItem | undefined = undefined;
 
     if (this.cartItems.length > 0) {
-      for (let tempCartItem of this.cartItems) {
-        if (tempCartItem.id === cartItem.id) {
-          existingCartItem = tempCartItem;
-          break;
-        }
-      }
+      existingCartItem = this.cartItems.find(
+        (tempCartItem) => tempCartItem.id === cartItem.id
+      );
+      // for (let tempCartItem of this.cartItems) {
+      //   if (tempCartItem.id === cartItem.id) {
+      //     existingCartItem = tempCartItem;
+      //     break;
+      //   }
+      // }
       alreadyExistsInCart = existingCartItem != undefined;
     }
     if (alreadyExistsInCart) {
@@ -49,6 +52,7 @@ export class CartService {
 
     this.logCartData(totalPriceValue, totalQuantityValue);
   }
+
   logCartData(totalPriceValue: number, totalQuantityValue: number) {
     console.log('Contents of the cart');
 
