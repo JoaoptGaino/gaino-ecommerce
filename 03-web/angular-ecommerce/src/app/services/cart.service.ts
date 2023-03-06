@@ -21,12 +21,6 @@ export class CartService {
       existingCartItem = this.cartItems.find(
         (tempCartItem) => tempCartItem.id === cartItem.id
       );
-      // for (let tempCartItem of this.cartItems) {
-      //   if (tempCartItem.id === cartItem.id) {
-      //     existingCartItem = tempCartItem;
-      //     break;
-      //   }
-      // }
       alreadyExistsInCart = existingCartItem != undefined;
     }
     if (alreadyExistsInCart) {
@@ -69,5 +63,27 @@ export class CartService {
       )}, totalQuantity: ${totalQuantityValue}`
     );
     console.log('---End log---');
+  }
+
+  decrementQuantity(cartItem: CartItem) {
+    cartItem.quantity--;
+
+    if (cartItem.quantity === 0) {
+      this.remove(cartItem);
+    } else {
+      this.computeCartTotals();
+    }
+  }
+
+  remove(cartItem: CartItem) {
+    //get index of item in the array
+    const itemIndex = this.cartItems.findIndex(
+      (cartItems) => cartItems.id === cartItem.id
+    );
+    //if found remove the item
+    if (itemIndex > -1) {
+      this.cartItems.splice(itemIndex, 1);
+      this.computeCartTotals();
+    }
   }
 }
