@@ -1,7 +1,9 @@
 package com.joaogaino.ecommerce.configs;
 
+import com.joaogaino.ecommerce.entities.Country;
 import com.joaogaino.ecommerce.entities.Product;
 import com.joaogaino.ecommerce.entities.ProductCategory;
+import com.joaogaino.ecommerce.entities.State;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
 import lombok.AllArgsConstructor;
@@ -25,19 +27,21 @@ public class DataRestConfig implements RepositoryRestConfigurer {
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
         HttpMethod[] unsupportedActions = {PUT, POST, DELETE};
 
-        config.getExposureConfiguration()
-                .forDomainType(Product.class)
-                .withItemExposure((metdata, httpMethods) -> httpMethods.disable(unsupportedActions))
-                .withCollectionExposure((metdata, httpMethods) -> httpMethods.disable(unsupportedActions));
-
-        config.getExposureConfiguration()
-                .forDomainType(ProductCategory.class)
-                .withItemExposure((metdata, httpMethods) -> httpMethods.disable(unsupportedActions))
-                .withCollectionExposure((metdata, httpMethods) -> httpMethods.disable(unsupportedActions));
+        disableHttpMethods(Product.class, config, unsupportedActions);
+        disableHttpMethods(ProductCategory.class, config, unsupportedActions);
+        disableHttpMethods(Country.class, config, unsupportedActions);
+        disableHttpMethods(State.class, config, unsupportedActions);
 
         exposeEntityIds(config);
 
         RepositoryRestConfigurer.super.configureRepositoryRestConfiguration(config, cors);
+    }
+
+    private static void disableHttpMethods(Class theClass, RepositoryRestConfiguration config, HttpMethod[] unsupportedActions) {
+        config.getExposureConfiguration()
+                .forDomainType(theClass)
+                .withItemExposure((metdata, httpMethods) -> httpMethods.disable(unsupportedActions))
+                .withCollectionExposure((metdata, httpMethods) -> httpMethods.disable(unsupportedActions));
     }
 
     private void exposeEntityIds(RepositoryRestConfiguration config) {
